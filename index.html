@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Pokemon Project</title>
+  <!--     jQUERY -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <!--     GOOGLE FONTS -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+  <!--     BOOTSTRAP CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!--     CUSTOM CSS -->
+  <link href="style.css" rel="stylesheet">
+
+ 
+
+</head>
+<body>
+  <header class="d-flex align-items-center">
+    <div class="container p-5 text-center">
+      <h1 class="display-2 text-warning">Pokémon Project</h1>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+    
+          <h1 class="pt-5 pb-4 text-center">Search for a Pokémon!</h1>
+          <div class="input-group input-group-lg">
+            <!-- TEXT FIELD -->
+            <input class="pokemon form-control" placeholder="Pokémon name" type="text" id="pokemonInput"> 
+            <!-- SEARCH BUTTON -->
+            <button class="btn btn-primary searchButton" onclick="fetchPokemon()">Search</button>
+          </div>
+ 
+
+          <!-- Placeholders for the information we will populate from our API. -->
+          <div class="row pokedexResults text-center">
+           <article class="pokemonSpecs container-fluid mb-4">
+            <!-- POKEMON NAME -->
+            <div id="pokeName" class="pt-3"></div>
+            <!-- POKEMON ID # -->
+            <div id="pokeId" class="pt-3"></div>
+          
+            <!-- POKEMON HEIGHT # -->
+            <div id="pokeHeight" class="pt-3"></div>
+            <!-- POKEMON WEIGHT # -->
+            <div id="pokeWeight" class="pt-3"></div>
+         
+           </article>
+            <!-- FRONT DEFAULT -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card  border-0 ">
+                <img id="pokeFront" src="" class="pokemonImage card-img-top" alt="">
+                <div class="card-body text-center">
+                  <figcaption id="frontDefault" class="card-title text-primary  text-primary mb-0"></figcaption>
+                  <div class="card-text text-black-50"></div>
+                </div>
+              </div>
+            </div>
+            <!-- BACK DEFAULT -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card  border-0 ">
+                <img id="pokeBack" src="" class="pokemonImage card-img-top " alt="">
+                <div class="card-body text-center">
+                  <figcaption id="backDefault" class="card-title text-primary  mb-0"></figcaption>
+                  <div class="card-text text-black-50"></div>
+                </div>
+              </div>
+            </div>
+            <!-- FRONT (SHINY)  -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card  border-0 ">
+                <img id="pokeFrontShiny" src="" class="pokemonImage card-img-top " alt="">
+                <div class="card-body text-center">
+                  <figcaption id="frontShiny" class="card-title text-primary  mb-0"></figcaption>
+                  <div class="card-text text-black-50"></div>
+                </div>
+              </div>
+            </div>
+            <!-- BACK (SHINY)  -->
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card  border-0 ">
+                <img id="pokeBackShiny" src="" class="pokemonImage card-img-top " alt="">
+                <div class="card-body text-center">
+                  <figcaption id="backShiny" class="card-title text-primary  mb-0"></figcaption>
+                  <div class="card-text text-black-50"></div>
+                </div>
+              </div>
+            </div>
+
+       
+          </div>
+     
+    </div>
+  </main>
+  <!-- CUSTOM SCRIPT -->
+  <script>
+    function fetchPokemon() {
+      let pokemon = $(".pokemon").val().toLowerCase();
+      let request = new XMLHttpRequest();
+      let url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`;
+
+      console.log(`GENERATED URL:${url}`);
+      request.open("GET", url);
+      request.onload = function() {
+        if (this.response === "Not Found") {
+          $("#pokeName").html(`<h2 class="pt-3 text-uppercase fw-bold">Search result for: <span class="text-primary">${pokemon}</span></h2>`);
+          $("#pokeId").html(`<span class="text-danger text-uppercase fw-bold">Pokemon not found.<br/> Please check for typos and try again.</span>`);
+        } else {
+          let data = JSON.parse(this.response);
+          if (request.status >= 200 && request.status < 400) {
+            let pokeId = data.id;
+            console.log(`pokeID:${pokeId}`);
+         
+            let pokeHeight = data.height;
+            console.log(`pokeHeight:${pokeHeight}`);
+            let pokeWeight = data.weight;
+            console.log(`pokeWeight:${pokeWeight}`);
+            let pokeFront = data.sprites.front_default;
+            console.log(`pokeFront:${pokeFront}`);
+            let pokeBack = data.sprites.back_default;
+            console.log(`pokeBack:${pokeBack}`);
+            let pokeFrontShiny = data.sprites.front_shiny;
+            console.log(`pokeFrontShiny:${pokeFrontShiny}`);
+            let pokeBackShiny = data.sprites.back_shiny;
+            console.log(`pokeBackShiny:${pokeBackShiny}`);
+
+            $("#pokeName").html(`<h2 class="pt-3 text-uppercase fw-bold">Search result for: <span class="text-primary">${pokemon}</span></h2>`);
+            $("#pokeId").html(`<h2 class="fw-bold">Pokedex ID#: <span class="text-primary text-uppercase fw-bold">${pokeId}</span></h2>`);
+         
+            $("#pokeHeight").html(`<h2 class="fw-bold">Pokemon Height: <span class="text-primary text-uppercase fw-bold">${pokeHeight} decimetres</span></h2>`);
+            $("#pokeWeight").html(`<h2 class="fw-bold">Pokemon Weight: <span class="text-primary text-uppercase fw-bold">${pokeWeight} hectograms</span></h2>`);
+           
+            $(".pokemonImage").addClass("img-fluid");
+            $("#pokeFront").attr("src", pokeFront)
+            $("#frontDefault").text("FRONT")
+            $("#pokeBack").attr("src", pokeBack);
+            $("#backDefault").text("BACK")
+            $("#pokeFrontShiny").attr("src", pokeFrontShiny);
+            $("#frontShiny").text("FRONT (SHINY)")
+            $("#pokeBackShiny").attr("src", pokeBackShiny);
+            $("#backShiny").text("BACK (SHINY)")
+          }
+        }
+      }
+      request.send();
+    }
+
+    // Add event listener for keyup event on the input field
+    $("#pokemonInput").keyup(function(event) {
+      // Check if the Enter key was pressed (key code 13)
+      if (event.keyCode === 13) {
+        // Call fetchPokemon() function if Enter key was pressed
+        fetchPokemon();
+      }
+    });
+  </script>
+
+  <!-- BOOTSTRAP JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+</body>
+</html>
